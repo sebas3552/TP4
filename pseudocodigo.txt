@@ -1,0 +1,39 @@
+void insertar(Nodo *raiz, Nodo *nuevo){
+   if(!raiz){
+      raiz = nuevo;
+   }else{
+      if(raiz == Hoja){
+         Nodo *intermedio = new Nodo(min{raiz, nuevo}, 'r'); //nodo rojo intermedio
+	 intermedio->izquierdo = min{raiz, nuevo} //hoja del elemento menor, construido por copia
+	 intermedio->derecho = max{raiz, nuevo}	//hoja del elemento mayor entre ambos, construido por copia
+	 delete raiz;
+	 raiz = intermedio; //reemplaza la hoja por un nodo intermedio cuya llave es la llave de la hoja a la que reemplazó
+      }else{
+         if(nuevo <= raiz){	//elementos menores, a la izquierda
+            if(raiz->izquierdo){
+	       insertar(raiz->izquierdo, nuevo);
+	    }
+	 }
+	 else{	//elementos mayores, a la derecha
+	   if(raiz->derecho){
+ 	       insertar(raiz->derecho, nuevo);
+	    }
+         }
+      }
+   }
+}
+
+Nodo *abuelo(){
+   if(padre)
+      retrurn padre->padre;
+   else
+      return nullptr;
+}
+
+Nodo *tio(){
+   if(padre){
+      if(padre->padre){
+         return (this->padre->padre->izquerdo != this->padre? this->padre->padre->izquierdo : this->padre->padre->derecho);
+      }
+   }
+}
