@@ -20,9 +20,15 @@ class Arbol
 			private:
 				Nodo<K> *actual;
 				std::vector<Nodo<K> *> arbolPlano;
+				int nodoActual;
 			public:
 				explicit Iterator(Nodo<K> *nodo = nullptr)
-				: actual(nodo){}
+				: actual(nodo), nodoActual(0) {}
+				Iterator(const Iterator &otro)
+				: actual(otro.actual) , nodoActual(otro.nodoActual), arbolPlano(otro.arbolPlano)
+				{
+					arbolPlano = otro.arbolPlano;
+				}
 				void recorrerEnOrden(Nodo<K> *raiz)
 				{
 					if(!(raiz))
@@ -35,14 +41,47 @@ class Arbol
 				{
 					return actual;
 				}
-				//Iterator &operator++();
+				Iterator &operator++()
+				{
+					if(nodoActual < arbolPlano.size()-1){
+						actual = arbolPlano[++nodoActual];		
+					}
+					else{
+						actual = nullptr;
+					}
+					return *this;
+				}
+				bool operator==(const Iterator &otro)
+				{
+					return (this->actual == otro.actual && otro.actual != nullptr? true : false);
+				}
+				
+				bool operator!=(const Iterator &otro)
+				{
+					return !(this->actual==otro.actual);
+				}
 		};
 		Iterator *i;
+		/**Iterador que apunta a la raiz del árbol.*/
+		Iterator begin()
+		{
+			Iterator nuevo(*this->i);
+			nuevo.nodoActual = 0;
+			nuevo.actual = nuevo.arbolPlano[nuevo.nodoActual];
+			return nuevo;
+		}
+		
+		/**Iterador que apunta a nulo.*/
+		Iterator end()
+		{
+			return Iterator(nullptr);
+		}
+		
 		Arbol() : profundidad(0), raiz(nullptr) { i = new Iterator(); }
 		~Arbol()
 		{
+			/**Borra los nodos con ayuda del vector de punteros del iterador.*/
 			if(!this->i->arbolPlano.empty()){
-				std::cout << std::endl;
 				for(int i = 0; i < this->i->arbolPlano.size(); i++){
 					delete this->i->arbolPlano[i];
 				}
@@ -58,37 +97,30 @@ class Arbol
 				//si es hoja
 				if(dynamic_cast<Hoja<K,  V> *>(raiz)){
 					/*Crea un nuevo nodo rojo intermedio.*/
-					Intermedio<K> *intermedio = new Intermedio<K>((raiz)->key, ROJO, (raiz)->padre );
+					Intermedio<K> *intermedio = new Intermedio<K>((raiz)->key, ROJO);
 					/*Crea una nueva hoja para el elemento que se va a agregar.*/
-					Hoja<K, V> *nueva = new Hoja<K, V>(k, v, NEGRO, intermedio);
+					Hoja<K, V> *nueva = new Hoja<K, V>(k, v, NEGRO);
+					Nodo<K>* menor = (raiz->operator<(dynamic_cast<Nodo<K>*>(nueva))? raiz : nueva);
 					/*A la izquierda del nuevo intermedio, agrega el elemento más pequeño.*/
-					intermedio->izquierdo = std::min(raiz, dynamic_cast<Nodo<K> *>(nueva));
+					intermedio->izquierdo = menor;
 					/*A la derecha, el más grande.*/
-					intermedio->derecho = std::max(raiz, dynamic_cast<Nodo<K> *>(nueva));
-					/*Reasigna el antecesor de la hoja para que su hijo sea el nuevo intermedio.*/
-					if(raiz->padre){
-						if(raiz->padre->izquierdo == raiz)
-							raiz->padre->izquierdo = intermedio;
-						else
-							raiz->padre->derecho = intermedio;
-					}
-					/*Reasigna el padre de la hoja para que apunte al nuevo intermedio.*/
-					(raiz)->padre = intermedio;
+					intermedio->derecho = (raiz->operator==(menor)? nueva : raiz);
 					/*Sustituye la hoja vieja por el nuevo nodo intermedio.*/
 					raiz = intermedio;
 				}
 				//si no es una hoja, insertar recursivamente en orden
 				else{
-					if(k <= (raiz)->key){
-						insertar(k, v, (raiz)->izquierdo);
+					if(k <= raiz->key){
+						insertar(k, v, raiz->izquierdo);
 					}else{
-						insertar(k, v, (raiz)->derecho);
+						insertar(k, v, raiz->derecho);
 					}
 				}
 			}
 		}
 		Arbol &agregar(K key, V value)
 		{
+			/*Inserta un nodo y actualiza el vector de nodos del iterador.**/
 			insertar(key, value, (this->raiz));		
 			this->i->arbolPlano.clear();
 			this->i->recorrerEnOrden((this->raiz));
@@ -96,15 +128,20 @@ class Arbol
 		}
 		void imprimir(std::ostream &salida, Nodo<K> *&raiz) const
 		{
+			/*Imprime en preorden, encerrando entre llaves a un nodo y sus correspondientes hijos.*/
 			if(!(raiz))
 				return;
-			imprimir(salida, (raiz)->izquierdo);
+			salida << "{ ";
 			raiz->imprimir(salida);
+			imprimir(salida, (raiz)->izquierdo);
 			imprimir(salida, (raiz)->derecho);
+			salida << " }";
+			
 		}
 		std::ostream &operator<<(std::ostream &salida)
 		{
 			imprimir(salida, this->raiz);
+			salida << std::endl << "cantidad de nodos: " << this->i->arbolPlano.size(); 
 			return salida;
 		}
 };

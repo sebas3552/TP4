@@ -5,16 +5,10 @@
 template <class K, class V>
 class Hoja : public Nodo<K>
 {
-	//friend class Arbol;
 	public:
 		V value;
-	
-	//protected:
-		virtual std::ostream &imprimir(std::ostream &salida) { salida << "(K: " << this->key << " V: " << value << ") "; return salida; }
-	
-	//public:
-		Hoja(K k, V v, char c,  Nodo<K> *p = nullptr, Nodo<K> *izq = nullptr, Nodo<K> *der = nullptr)
-		: Nodo<K>(k, c, p, izq, der), value(v) { }
-		
+		Hoja(K k, V v, char c, Nodo<K> *izq = nullptr, Nodo<K> *der = nullptr)
+		: Nodo<K>(k, c, izq, der), value(v) { }
+		virtual std::ostream &imprimir(std::ostream &salida) { salida << "(K: " << this->key << " V: " << value << ") "; return salida; }	
 };
 #endif
