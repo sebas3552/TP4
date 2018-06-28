@@ -1,27 +1,30 @@
 #ifndef ARBOL_R_N
 #define ARBOL_R_N
-#include <algorithm>
 #include <vector>
 #include <initializer_list>
 #include "Intermedio.h"
 #include "Hoja.h"
+#include "Visualizador.h"
 template <class K, class V>
 class Arbol
 {
+	template <class S, class T>
+	friend class Visualizador;
 	private:
 		Nodo<K> *raiz;
 		int profundidad;
-		const char NEGRO = 'n';
-		const char ROJO = 'r';
-		/**Función que recorre el árbol en orden (hijo izquierdo - raiz - hijo derecho) y va agregando los nodos
+		static const char NEGRO = 'n';
+		static const char ROJO = 'r';
+		int cantidadNodos;
+		/**Función que recorre el árbol en pre-orden (raiz - hijo izquierdo - hijo derecho) y va agregando los nodos
 		al vector de punteros a Nodo para poder recorrerlos.*/
-		void recorrerEnOrden(Nodo<K> *raiz)
+		void recorrerEnPreorden(Nodo<K> *raiz)
 		{
 			if(!(raiz))
 				return;
-			recorrerEnOrden((raiz)->izquierdo);
 			arbolPlano.push_back(raiz);
-			recorrerEnOrden((raiz)->derecho);
+			recorrerEnPreorden((raiz)->izquierdo);
+			recorrerEnPreorden((raiz)->derecho);
 		}
 		
 	public:
@@ -141,8 +144,14 @@ class Arbol
 		{
 			return Iterator(this, nullptr);
 		}
-		
-		Arbol() : profundidad(0), raiz(nullptr) { }
+		/**Constructor por omisión.*/
+		Arbol() : profundidad(0), cantidadNodos(0), raiz(nullptr) { }
+		/**Constructor con lista inicializadora. Debe ser una lista de punteros a Hoja.*/
+		Arbol(std::initializer_list<Hoja<K, V> *> lista): profundidad(0), cantidadNodos(0), raiz(nullptr)
+		{
+			for(Hoja<K, V> *hoja : lista)
+				agregar(hoja->key, hoja->value);
+		} 
 		~Arbol()
 		{
 			/**Borra los nodos con ayuda del vector de punteros del iterador.*/
@@ -187,7 +196,8 @@ class Arbol
 			/*Inserta un nodo y actualiza el vector de nodos del iterador.**/
 			insertar(key, value, (this->raiz));		
 			this->arbolPlano.clear();
-			this->recorrerEnOrden((this->raiz));
+			this->recorrerEnPreorden((this->raiz));
+			cantidadNodos = arbolPlano.size();
 			return *this;
 		}
 		void imprimir(std::ostream &salida, Nodo<K> *&raiz) const
