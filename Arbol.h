@@ -5,16 +5,27 @@
 #include "Intermedio.h"
 #include "Hoja.h"
 #include "Visualizador.h"
+/**@class Arbol
+*Clase mediante la cual se construye la estructura del árbol binario ordenado equilibrado rojo-negro.
+*Cuenta con la clase anidada de acceso público Iterator, para realizar operaciones de recorrido y sustitución de nodos 
+*en el árbol. El árbol se recorre en preorden por el iterador.
+*/
 template <class K, class V>
 class Arbol
 {
+	/**Declaración friend de la clase emplantillada Visualizador.*/
 	template <class S, class T>
 	friend class Visualizador;
 	private:
+		/**Puntero al nodo raíz del árbol.*/
 		Nodo<K> *raiz;
+		/**Entero que guarda la profundidad del árbol (nodos negros).*/
 		int profundidad;
+		/**Constante para representar el color negro de un nodo.*/
 		static const char NEGRO = 'n';
+		/**Constante para representar el color rojo de un nodo.*/
 		static const char ROJO = 'r';
+		/**Cantidad de nodos del árbol, útil para cálculo de dimensiones del gráfico SVG.*/
 		int cantidadNodos;
 		/**Función que recorre el árbol en pre-orden (raiz - hijo izquierdo - hijo derecho) y va agregando los nodos
 		al vector de punteros a Nodo para poder recorrerlos.*/
@@ -30,6 +41,10 @@ class Arbol
 	public:
 		/**Vector que contiene los nodos del árbol, para poder recorrerlos fácilmente.*/
 		std::vector<Nodo<K> *> arbolPlano;
+		/**@class Iterator
+		*Esta clase permite tener objetos para iterar un árbol, útil para operaciones de recorrido, inserción y reemplazo
+		*de nodos en la estructura del árbol.
+		*/
 		class Iterator
 		{
 			friend class Arbol;
@@ -99,6 +114,8 @@ class Arbol
 					if(nodoActual -1 >= 0){
 						nodoActual--;
 						actual = nodos->operator[](nodoActual);
+					}else{
+						actual = nodos->operator[](0);
 					}
 					return *this;
 				}
@@ -124,7 +141,6 @@ class Arbol
 					}
 					/*Elimina la victima.*/
 					delete victima;
-					victima = 0;
 					/*Sustituye el puntero eliminado en el vector de punteros.*/
 					nodos->operator[](dirVictima) = nodo;
 					/*Restablece el puntero actual para que quede apuntando al nuevo nodo.*/
@@ -152,6 +168,7 @@ class Arbol
 			for(Hoja<K, V> *hoja : lista)
 				agregar(hoja->key, hoja->value);
 		} 
+		/**Destructor.*/
 		~Arbol()
 		{
 			/**Borra los nodos con ayuda del vector de punteros del iterador.*/
@@ -161,10 +178,11 @@ class Arbol
 				}
 			}
 		}
+		/**Función recursiva para insertar ordenadamente nodos hoja en el árbol.*/
 		void insertar(K k, V v, Nodo<K> *&raiz)
 		{
 			if(!raiz){
-				raiz = new Hoja<K, V>(k, v, NEGRO);
+				raiz = new Hoja<K, V>(k, v);
 			}
 			else{
 				//si es hoja
@@ -172,7 +190,7 @@ class Arbol
 					/*Crea un nuevo nodo rojo intermedio.*/
 					Intermedio<K> *intermedio = new Intermedio<K>((raiz)->key, ROJO);
 					/*Crea una nueva hoja para el elemento que se va a agregar.*/
-					Hoja<K, V> *nueva = new Hoja<K, V>(k, v, NEGRO);
+					Hoja<K, V> *nueva = new Hoja<K, V>(k, v);
 					Nodo<K>* menor = (raiz->operator<(dynamic_cast<Nodo<K>*>(nueva))? raiz : nueva);
 					/*A la izquierda del nuevo intermedio, agrega el elemento más pequeño.*/
 					intermedio->izquierdo = menor;
@@ -191,6 +209,7 @@ class Arbol
 				}
 			}
 		}
+		/**Función para agregar un par (llave, valor), para uso del cliente.*/
 		Arbol &agregar(K key, V value)
 		{
 			/*Inserta un nodo y actualiza el vector de nodos del iterador.**/
@@ -200,6 +219,7 @@ class Arbol
 			cantidadNodos = arbolPlano.size();
 			return *this;
 		}
+		/**Función recursiva que imprime el árbol en preorden en la salida estándar.*/
 		void imprimir(std::ostream &salida, Nodo<K> *&raiz) const
 		{
 			/*Imprime en preorden, encerrando entre llaves a un nodo y sus correspondientes hijos.*/
@@ -212,6 +232,7 @@ class Arbol
 			salida << " }";
 			
 		}
+		/**Función que imprime el árbol en preorden en la salida estándar, para pruebas del programa.*/
 		std::ostream &operator<<(std::ostream &salida)
 		{
 			imprimir(salida, this->raiz);

@@ -3,7 +3,6 @@ using namespace std;
 
 int main()
 {
-	
 	/*a->agregar(5, "cinco");
 	a->agregar(6, "seis");
 	a->agregar(4, "cuatro");
@@ -24,31 +23,23 @@ int main()
 	Hoja<int, const char *> *hoja8 = new Hoja<int, const char*>(9, "nueve");
 	Hoja<int, const char *> *hoja9 = new Hoja<int, const char*>(3, "tres");
 	Hoja<int, const char *> *hoja10 = new Hoja<int, const char*>(-2, "menos dos");
-	Arbol<int, const char *> a = {hoja1, hoja2, hoja3, hoja4, hoja5, hoja6, hoja7, hoja8, hoja9, hoja10};
-	//a->operator<<(cout);
+	Hoja<int, const char *> *hoja11 = new Hoja<int, const char*>(20, "veinte");
+	Hoja<int, const char *> *hoja12 = new Hoja<int, const char*>(21, "veintiuno");
+	Arbol<int, const char *> a = {hoja1, hoja2, hoja3, hoja4, hoja5, hoja6, hoja7, hoja8, hoja9, hoja10, hoja11, hoja12};
+	//a->operator<<(cout);	
 	Arbol<int, const char *>::Iterator i = a.begin();
-	for(i; *i != nullptr ; ++i){
-		(*i)->imprimir(cout) << endl;
-	}
-	i = a.begin();
-	/*Arbol<int, const char*>::Iterator j(i);
-	for(int l = 0; l < 3; l++)
-		++j;
-	Intermedio<int> *intermedio = new Intermedio<int>(-4);
-	/*cambia el nodo 2 por el nuevo nodo -4
-	j = intermedio;
-	cout << "despues del cambio, imprimiendo con i: " << endl;
-	for(i; i != a.end() ; ++i){
-		(*i)->imprimir(cout) << endl;
-	}
-	cout << "imprimiendo con j: " << endl;
-	for(j = a.begin(); j != a.end() ; ++j){
-		(*j)->imprimir(cout) << endl;
-	}*/
-	i = a.begin();
 	Visualizador<int, const char *> *v = new Visualizador<int, const char *>(&a, i);
 	v->dibujar();
+	Arbol<int, const char*>::Iterator j(i);
+	for(int l = 0; l < 19; l++)
+		++j;
+	Hoja<int, const char *> *intermedio = new Hoja<int, const char*>(-3, "menos tres");
+	//cambia el nodo 2 por el nuevo nodo -4
+	j = intermedio;
+	i = a.begin();
+	v->dibujar();
 	delete v;
+	delete hoja1;
 	//delete a;
 	return 0;
 }
