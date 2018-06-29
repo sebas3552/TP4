@@ -219,6 +219,63 @@ class Arbol
 			cantidadNodos = arbolPlano.size();
 			return *this;
 		}
+		
+		
+		
+		//En proceso, falta lo de la raiz de recolorear
+		void rotacionDobleDerecha( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
+			Nodo<K> * huerfano = raiz->izquierdo->derecho->izquierdo;
+			raiz->izquierdo->derecho->izquierdo = raiz->izquierdo;
+			raiz->izquierdo = raiz->izquierdo->derecho;
+			raiz->izquierdo->izquierdo->derecho = huerfano;
+			rotacionSimpleDerechaNormal( raiz, i );
+		}
+		void rotacionDobleIzquierda( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
+			Nodo<K> * huerfano = raiz->derecho->izquierdo->derecho;
+			raiz->derecho->izquierdo->derecho = raiz->derecho;
+			raiz->derecho = raiz->derecho->izquierdo;
+			raiz->derecho->derecho->izquierdo = huerfano;
+			rotacionSimpleIzquierdaNormal( raiz, i );
+		}
+		void rotacionSimpleDerechaNormal( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
+			Nodo<K> * huerfano = raiz->izquierdo->derecho;
+			raiz->izquierdo->derecho = raiz;
+			if( *i->derecho == raiz ){
+				*i->derecho = raiz->izquierdo;
+			} else {
+				*i->izquierdo = raiz->izquierdo;
+			}
+			raiz->izquierdo = huerfano;
+			recolorear( raiz );
+		}
+		void rotacionSimpleIzquierdaNormal( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
+			Nodo<K> * huerfano = raiz->derecho->izquierdo;
+			raiz->derecho->izquierdo = raiz;
+			if( *i->derecho == raiz ){
+				*i->derecho = raiz->derecho;
+			} else {
+				*i->izquierdo = raiz->derecho;
+			}
+			raiz->derecho = huerfano;
+			recolorear( raiz );
+		}
+		// void rotacionSimpleDerecha( Nodo<K> * raiz ){
+			// Nodo<K> * huerfano = raiz->derecho->izquierdo->derecho;
+			// raiz->derecho->izquierdo->derecho = raiz->derecho;
+			// raiz->derecho = raiz->derecho->izquierdo;
+			// raiz->derecho->derecho->izquierdo = huerfano;
+		// }
+		// void rotacionSimpleIzquierda( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
+			// Nodo<K> * huerfano = raiz->izquierdo->derecho->izquierdo;
+			// raiz->izquierdo->derecho->izquierdo = raiz->izquierdo;
+			// raiz->izquierdo = raiz->izquierdo->derecho;
+			// raiz->izquierdo->izquierdo->derecho = huerfano;
+		// }
+		
+		
+		
+		
+		
 		/**Función recursiva que imprime el árbol en preorden en la salida estándar.*/
 		void imprimir(std::ostream &salida, Nodo<K> *&raiz) const
 		{
