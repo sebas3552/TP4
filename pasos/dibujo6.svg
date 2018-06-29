@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='1366' height='768px'>
+<circle cx="683" cy="50" r="40" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="683" y="55">5</text>
+<line x1="683" y1="90" x2="533" y2="160" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="533" cy="200" r="40" stroke="black" stroke-width="3" fill="red" />
+<circle cx="533" cy="200" r="30" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="533" y="205">5</text>
+<line x1="533" y1="240" x2="383" y2="310" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="383" cy="350" r="40" stroke="black" stroke-width="3" fill="red" />
+<circle cx="383" cy="350" r="30" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="383" y="355">1</text>
+<line x1="383" y1="390" x2="323" y2="460" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="283" y="460" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="323" y="495">0</text>
+<text text-anchor="middle" x="323" y="510">cero</text>
+<line x1="383" y1="390" x2="443" y2="460" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="403" y="460" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="443" y="495">1</text>
+<text text-anchor="middle" x="443" y="510">uno</text>
+<line x1="533" y1="240" x2="593" y2="310" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="553" y="310" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="593" y="345">5</text>
+<text text-anchor="middle" x="593" y="360">cinco</text>
+<line x1="683" y1="90" x2="743" y2="160" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="703" y="160" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="743" y="195">6</text>
+<text text-anchor="middle" x="743" y="210">seis</text>
+<text text-anchor="start" x="10" y="20">Paso 6: </text><text text-anchor="start" x="10" y="35">Insertar hoja</text></svg>
