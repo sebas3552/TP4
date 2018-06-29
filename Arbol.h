@@ -239,6 +239,7 @@ class Arbol
 		}
 		void rotacionSimpleDerechaNormal( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
 			Nodo<K> * huerfano = raiz->izquierdo->derecho;
+			Nodo<K> * paraRecolorear = raiz->izquierdo;
 			raiz->izquierdo->derecho = raiz;
 			if( *i->derecho == raiz ){
 				*i->derecho = raiz->izquierdo;
@@ -246,10 +247,11 @@ class Arbol
 				*i->izquierdo = raiz->izquierdo;
 			}
 			raiz->izquierdo = huerfano;
-			recolorear( raiz );
+			recolorear( paraRecolorear );
 		}
 		void rotacionSimpleIzquierdaNormal( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
 			Nodo<K> * huerfano = raiz->derecho->izquierdo;
+			Nodo<K> * paraRecolorear = raiz->derecho;
 			raiz->derecho->izquierdo = raiz;
 			if( *i->derecho == raiz ){
 				*i->derecho = raiz->derecho;
@@ -257,7 +259,7 @@ class Arbol
 				*i->izquierdo = raiz->derecho;
 			}
 			raiz->derecho = huerfano;
-			recolorear( raiz );
+			recolorear( paraRecolorear );
 		}
 		// void rotacionSimpleDerecha( Nodo<K> * raiz ){
 			// Nodo<K> * huerfano = raiz->derecho->izquierdo->derecho;
