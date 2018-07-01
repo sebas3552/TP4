@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <initializer_list>
+#include <algorithm>
 #include "Intermedio.h"
 #include "Hoja.h"
 #include "Visualizador.h"
@@ -92,7 +93,10 @@ class Arbol
 			nuevoPadre->izquierdo->derecho = huerfano;
 			raiz->izquierdo = nuevoPadre;
 			rotacionSimpleDerecha( raiz, i );
-			instrucciones.push_back("Rotación doble derecha");
+			std::string vieja = "Rotación simple derecha";
+			std::string nueva = "Rotación doble derecha";
+			/*Se sustituye la instrucción de rotación simple derecha porque está contemplada dentro de la rotación doble derecha.*/
+			std::replace(instrucciones.begin(), instrucciones.end(), vieja, nueva);
 		}
 		/**Función que realiza una rotación doble hacia la izquierda, siendo ésta una simple derecha (modificada) y 
 		*una simple izquierda. Toma el puntero a la raiz por referencia, para modificarla directamente cuando es la raíz absoluta del árbol.
@@ -107,7 +111,10 @@ class Arbol
 			nuevoPadre->derecho->izquierdo = huerfano;
 			raiz->derecho = nuevoPadre;
 			rotacionSimpleIzquierda( raiz, i );
-			instrucciones.push_back("Rotación doble izquierda");
+			std::string vieja = "Rotación simple izquierda";
+			std::string nueva = "Rotación doble izquierda";
+			/*Se sustituye la instrucción de rotación simple izquierda porque está contemplada dentro de la rotación doble izquierda.*/
+			std::replace(instrucciones.begin(), instrucciones.end(), vieja, nueva);
 		}
 		/**Función que realiza una rotación simple hacia la derecha. Toma el puntero a la raiz por referencia, para modificarla directamente 
 		*cuando es la raíz absoluta del árbol.
@@ -329,9 +336,9 @@ class Arbol
 			return Iterator(this, nullptr);
 		}
 		/**Constructor por omisión.*/
-		Arbol() : profundidad(0), cantidadNodos(0), raiz(nullptr) { }
+		Arbol() : cantidadNodos(0), raiz(nullptr) { }
 		/**Constructor con lista inicializadora. Debe ser una lista de punteros a Hoja.*/
-		Arbol(std::initializer_list<Hoja<K, V> *> lista): profundidad(0), cantidadNodos(0), raiz(nullptr)
+		Arbol(std::initializer_list<Hoja<K, V> *> lista): cantidadNodos(0), raiz(nullptr)
 		{
 			for(Hoja<K, V> *hoja : lista)
 				agregar(hoja->key, hoja->value);
@@ -393,12 +400,14 @@ class Arbol
 		{
 			/*Inserta un nodo y actualiza el vector de nodos del iterador.*/
 			instrucciones.clear();
+			std::string instruccion = "Insertando (" + std::to_string(key) + ", " + value + " )"; 
+			instrucciones.push_back(instruccion);
 			cambioColorRaiz();			
 			insertar(key, value, (this->raiz));				
 			this->arbolPlano.clear();
 			this->recorrerEnPreorden((this->raiz));
 			cantidadNodos = arbolPlano.size();
-			instrucciones.push_back("Insertar hoja");			
+			instrucciones.push_back("Inserción hoja");			
 			return instrucciones;
 		}
 		/**Función recursiva que imprime el árbol en preorden en la salida estándar.*/

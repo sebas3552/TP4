@@ -64,10 +64,10 @@ class Visualizador
 		void dibujarTexto(int x, int y, Nodo<K> *nodo)
 		{
 			if(dynamic_cast<Intermedio<K> *>(nodo)){
-				dibujo << "<text text-anchor=\"middle\" x=\"" << x << "\" y=\"" << y+5 << "\">" << (*iterador)->key << "</text>\n";
+				dibujo << "<text text-anchor=\"middle\" textLength=\"77\" x=\"" << x << "\" y=\"" << y+5 << "\">" << (*iterador)->key << "</text>\n";
 			}else{
-				dibujo << "<text text-anchor=\"middle\" x=\"" << x << "\" y=\"" << y-5 << "\">" << (*iterador)->key << "</text>\n";
-				dibujo << "<text text-anchor=\"middle\" x=\"" << x << "\" y=\"" << y+10 << "\">" << (dynamic_cast<Hoja<K, V> *>(*iterador))->value << "</text>\n";
+				dibujo << "<text text-anchor=\"middle\" textLength=\"77\" x=\"" << x << "\" y=\"" << y-5 << "\">" << (*iterador)->key << "</text>\n";
+				dibujo << "<text text-anchor=\"middle\" textLength=\"77\" x=\"" << x << "\" y=\"" << y+10 << "\">" << (dynamic_cast<Hoja<K, V> *>(*iterador))->value << "</text>\n";
 			}			
 		}
 		/**Función que imprime en formato de texto SVG las instrucciones necesarias para construir el árbol tal y como se muestra en la visualización.

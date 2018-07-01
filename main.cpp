@@ -7,11 +7,10 @@ using namespace std;
 int main()
 {
 	vector<pair<int, char>> hojas;
-	char c = 'a';
 	int num = 0;
+	char c = 'a';
 	cout << "Inserte elementos o digite -1 para terminar" << endl;
-	while(num != -1){
-		cin >> num;
+	while(cin >> num && num != -1){
 		hojas.push_back(make_pair(num, c++));
 	}
 	Arbol<int, char> *a = new Arbol<int, char>();	

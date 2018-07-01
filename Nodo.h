@@ -36,10 +36,10 @@ class Nodo
 		/**Función virtual pura para imprimir un Nodo; el Intermedio imprime su llave, el Hoja imprime su llave y su valor.*/
 		virtual std::ostream &imprimir(std::ostream &) = 0;
 		/**Funciones de comparación entre nodos, basándose en el elemento común entre ambos tipos: la llave.*/
-		virtual bool operator<=(Nodo<K> *otro) const { return this->key <= otro->key; }
-		virtual bool operator<(Nodo<K> *otro) const { return this->key < otro->key; }
-		virtual bool operator>(Nodo<K> *otro) const { return this->key > otro->key; }
-		virtual bool operator==(Nodo<K> *otro) const { return this->key == otro->key; }
-		virtual bool operator!=(Nodo<K> *otro) const { return !(this == otro); }	
+		virtual bool operator<=(const Nodo<K> *otro){ return this->key <= otro->key; }
+		virtual bool operator<(const Nodo<K> *otro){ return this->key < otro->key; }
+		virtual bool operator>(const Nodo<K> *otro){ return this->key > otro->key; }
+		virtual bool operator==(const Nodo<K> *otro){ return this->key == otro->key; }
+		virtual bool operator!=(const Nodo<K> *otro){ return !(this == otro); }	
 };
 #endif
