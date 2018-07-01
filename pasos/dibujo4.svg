@@ -1,25 +1,24 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='1366' height='768px'>
-<circle cx="683" cy="50" r="40" stroke="black" stroke-width="3" fill="none" />
-<text text-anchor="middle" x="683" y="55">5</text>
-<line x1="683" y1="90" x2="533" y2="160" style="stroke:rgb(0,0,0);stroke-width:2" />
-<circle cx="533" cy="200" r="40" stroke="black" stroke-width="3" fill="red" />
-<circle cx="533" cy="200" r="30" stroke="black" stroke-width="3" fill="none" />
-<text text-anchor="middle" x="533" y="205">5</text>
-<line x1="533" y1="240" x2="383" y2="310" style="stroke:rgb(0,0,0);stroke-width:2" />
-<circle cx="383" cy="350" r="40" stroke="black" stroke-width="3" fill="red" />
-<circle cx="383" cy="350" r="30" stroke="black" stroke-width="3" fill="none" />
-<text text-anchor="middle" x="383" y="355">4</text>
-<line x1="383" y1="390" x2="323" y2="460" style="stroke:rgb(0,0,0);stroke-width:2" />
-<rect x="283" y="460" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="323" y="495">2</text>
-<text text-anchor="middle" x="323" y="510">dos</text>
-<line x1="383" y1="390" x2="443" y2="460" style="stroke:rgb(0,0,0);stroke-width:2" />
-<rect x="403" y="460" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="443" y="495">4</text>
-<text text-anchor="middle" x="443" y="510">cuatro</text>
-<line x1="533" y1="240" x2="593" y2="310" style="stroke:rgb(0,0,0);stroke-width:2" />
-<rect x="553" y="310" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="593" y="345">5</text>
-<text text-anchor="middle" x="593" y="360">cinco</text>
-<line x1="683" y1="90" x2="743" y2="160" style="stroke:rgb(0,0,0);stroke-width:2" />
-<rect x="703" y="160" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="743" y="195">6</text>
-<text text-anchor="middle" x="743" y="210">seis</text>
-<text text-anchor="start" x="10" y="20">Paso 4: </text><text text-anchor="start" x="10" y="35">Insertar hoja</text></svg>
+<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='1525' height='775px'>
+<circle cx="762" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />
+<circle cx="762" cy="50" r="30" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="762" y="55">3</text>
+<line x1="762" y1="90" x2="542" y2="230" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="542" cy="270" r="40" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="542" y="275">1</text>
+<line x1="542" y1="310" x2="482" y2="380" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="442" y="380" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="482" y="415">1</text>
+<text text-anchor="middle" x="482" y="430">d</text>
+<line x1="542" y1="310" x2="602" y2="380" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="562" y="380" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="602" y="415">3</text>
+<text text-anchor="middle" x="602" y="430">b</text>
+<line x1="762" y1="90" x2="982" y2="230" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="982" cy="270" r="40" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="982" y="275">4</text>
+<line x1="982" y1="310" x2="922" y2="380" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="882" y="380" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="922" y="415">4</text>
+<text text-anchor="middle" x="922" y="430">a</text>
+<line x1="982" y1="310" x2="1042" y2="380" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="1002" y="380" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="1042" y="415">7</text>
+<text text-anchor="middle" x="1042" y="430">c</text>
+<text text-anchor="start" x="10" y="20">Paso 4: </text><text text-anchor="start" x="10" y="40">Color flip</text><text text-anchor="start" x="10" y="70">Insertar hoja</text></svg>
