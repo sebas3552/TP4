@@ -1,6 +1,7 @@
 #ifndef ARBOL_R_N
 #define ARBOL_R_N
 #include <vector>
+#include <string>
 #include <initializer_list>
 #include "Intermedio.h"
 #include "Hoja.h"
@@ -12,21 +13,21 @@
 */
 template <class K, class V>
 class Arbol
-{
-	/**Declaración friend de la clase emplantillada Visualizador.*/
-	template <class S, class T>
-	friend class Visualizador;
+{	public:
+		class Iterator;
+		/**Declaración friend de la clase emplantillada Visualizador.*/
+		template <class S, class T>
+		friend class Visualizador;
+	
 	private:
 		/**Puntero al nodo raíz del árbol.*/
 		Nodo<K> *raiz;
-		/**Entero que guarda la profundidad del árbol (nodos negros).*/
-		int profundidad;
 		/**Constante para representar el color negro de un nodo.*/
 		static const char NEGRO = 'n';
 		/**Constante para representar el color rojo de un nodo.*/
 		static const char ROJO = 'r';
-		/**Cantidad de nodos del árbol, útil para cálculo de dimensiones del gráfico SVG.*/
-		int cantidadNodos;
+		/**Vector de instrucciones para imprimir en el archivo svg.*/
+		std::vector<std::string> instrucciones;
 		/**Función que recorre el árbol en pre-orden (raiz - hijo izquierdo - hijo derecho) y va agregando los nodos
 		al vector de punteros a Nodo para poder recorrerlos.*/
 		void recorrerEnPreorden(Nodo<K> *raiz)
@@ -37,8 +38,172 @@ class Arbol
 			recorrerEnPreorden((raiz)->izquierdo);
 			recorrerEnPreorden((raiz)->derecho);
 		}
+		/**Función que realiza el procedimiento del cambio de color a la raíz, cuando se identifique el caso.*/
+		void cambioColorRaiz()
+		{
+			if(this->raiz){
+				if(this->raiz->color == ROJO){
+					this->raiz->color = NEGRO;
+					instrucciones.push_back("Cambio color raíz");
+				}
+			}
+		}
+		/**Función que realiza el color flip, que invierte los colores cuando un nodo es negro y sus dos hijos son rojos
+		*@param padre Nodo padre al que se le invertirá el color junto con sus hijos, en caso de cumplir las condiciones.
+		*/
+		void colorFlip(Nodo<K> *padre)
+		{
+			/*Omite las hojas, ya que siempre son negras.*/
+			if(dynamic_cast<Hoja<K, V> *>(padre))
+				return;
+			if(padre->izquierdo->color == ROJO && padre->derecho->color == ROJO){
+				padre->izquierdo->color = padre->derecho->color = NEGRO;
+				padre->color = ROJO;
+				instrucciones.push_back("Color flip");
+			}
+		}
+		/**Función que realiza el recoloreo después de una rotación, para mantener las leyes de los árboles rojo-negro.
+		*@param padre Nodo padre que representa el subárbol que se necesita recolorear.
+		*/
+		void recolorear(Nodo<K> *padre)
+		{
+			if(padre->color == ROJO){
+				/*Si los hijos no son hojas y sus colores son distintos, se colorean ambos rojos y el padre de color negro.*/
+				if(padre->izquierdo->color != padre->derecho->color){
+					if(!dynamic_cast<Hoja<K, V> *>(padre->izquierdo))
+						padre->izquierdo->color = ROJO;
+					if(!dynamic_cast<Hoja<K, V> *>(padre->derecho))
+						padre->derecho->color = ROJO;
+						padre->color = NEGRO;
+					instrucciones.push_back("Recoloreo");
+				}
+			}
+		}
+		/**Función que realiza una rotación doble hacia la derecha, siendo ésta una simple izquierda (modificada) y 
+		*una simple derecha. Toma el puntero a la raiz por referencia, para modificarla directamente cuando es la raíz absoluta del árbol.
+		*@param raiz Nodo raiz donde se identificó el problema (hijo derecho e hijo izquierdo del hijo derecho rojos).
+		*@param i Iterador que apunta al nodo raiz, para no perder su referencia al hacer modificaciones a los punteros, y para poder reasignar 
+		*el subárbol como hijo del nodo abuelo cuando sea necesario.
+		*/
+		void rotacionDobleDerecha( Nodo<K> *&raiz, Iterator & i ){
+			Nodo<K> *huerfano = raiz->izquierdo->derecho->izquierdo;
+			Nodo<K> *nuevoPadre = raiz->izquierdo->derecho;
+			nuevoPadre->izquierdo = raiz->izquierdo;
+			nuevoPadre->izquierdo->derecho = huerfano;
+			raiz->izquierdo = nuevoPadre;
+			rotacionSimpleDerecha( raiz, i );
+			instrucciones.push_back("Rotación doble derecha");
+		}
+		/**Función que realiza una rotación doble hacia la izquierda, siendo ésta una simple derecha (modificada) y 
+		*una simple izquierda. Toma el puntero a la raiz por referencia, para modificarla directamente cuando es la raíz absoluta del árbol.
+		*@param raiz Nodo raiz donde se identificó el problema (hijo izquierdo e hijo derecho del hijo izquierdo rojos).
+		*@param i Iterador que apunta al nodo raiz, para no perder su referencia al hacer modificaciones a los punteros, y para poder reasignar 
+		*el subárbol como hijo del nodo abuelo cuando sea necesario.
+		*/
+		void rotacionDobleIzquierda( Nodo<K> *&raiz, Iterator & i ){
+			Nodo<K> * huerfano = raiz->derecho->izquierdo->derecho;
+			Nodo<K> *nuevoPadre = raiz->derecho->izquierdo;
+			nuevoPadre->derecho = raiz->derecho;
+			nuevoPadre->derecho->izquierdo = huerfano;
+			raiz->derecho = nuevoPadre;
+			rotacionSimpleIzquierda( raiz, i );
+			instrucciones.push_back("Rotación doble izquierda");
+		}
+		/**Función que realiza una rotación simple hacia la derecha. Toma el puntero a la raiz por referencia, para modificarla directamente 
+		*cuando es la raíz absoluta del árbol.
+		*@param raiz Nodo raiz donde se identificó el problema (hijo izquierdo e hijo izquierdo del hijo izquierdo rojos).
+		*@param i Iterador que apunta al nodo raiz, para no perder su referencia al hacer modificaciones a los punteros, y para poder reasignar 
+		*el subárbol como hijo del nodo abuelo cuando sea necesario.
+		*/
+		void rotacionSimpleDerecha( Nodo<K> *&raiz, Iterator & i ){
+			Nodo<K> * huerfano = raiz->izquierdo->derecho;
+			Nodo<K> *nuevoPadre = raiz->izquierdo;
+			raiz->izquierdo = huerfano;
+			nuevoPadre->derecho = raiz;
+			if((*(--i))->izquierdo == raiz){
+				(*(--i))->izquierdo = nuevoPadre;
+			}else{
+				if((*(--i))->derecho == raiz){
+				(*(--i))->derecho = nuevoPadre;
+				}else{
+					raiz = nuevoPadre;
+				}
+			}
+			instrucciones.push_back("Rotación simple derecha");
+			recolorear( nuevoPadre );
+		}
+		/**Función que realiza una rotación simple hacia la izquierda. Toma el puntero a la raiz por referencia, para modificarla directamente 
+		*cuando es la raíz absoluta del árbol.
+		*@param raiz Nodo raiz donde se identificó el problema (hijo derecho e hijo derecho del hijo derecho rojos).
+		*@param i Iterador que apunta al nodo raiz, para no perder su referencia al hacer modificaciones a los punteros, y para poder reasignar 
+		*el subárbol como hijo del nodo abuelo cuando sea necesario.
+		*/
+		void rotacionSimpleIzquierda( Nodo<K> *& raiz, Iterator & i ){
+			Nodo<K> *huerfano = raiz->derecho->izquierdo;
+			Nodo<K> *nuevoPadre = raiz->derecho;
+			raiz->derecho = huerfano;
+			nuevoPadre->izquierdo = raiz;
+			if((*(--i))->derecho == raiz){
+				(*(--i))->derecho = nuevoPadre;
+			}else{
+				if((*(--i))->izquierdo == raiz){
+				(*(--i))->izquierdo = nuevoPadre;
+				}else{
+					raiz = nuevoPadre;
+				}
+			}
+			instrucciones.push_back("Rotación simple izquierda");
+			recolorear( nuevoPadre );		
+		}
+		
+		/**Función que verifica las condiciones donde se dan los casos de: color flip, rotación simple izquierda, rotación simple derecha, rotación doble
+		izquierda, rotación doble derecha, y llama a la función correspondiente para arreglar ese problema, verificando los nodos en el orden el que se 
+		insertará el próximo nuevo elemento. Se toma el nodo raíz por referencia para poder pasarlo así a las funciones que necesiten modificarlo.*/
+		void verificarCamino(Nodo<K> *&raiz, K key)
+		{
+			if(!raiz){
+				return;
+			}
+			else{
+				if(raiz->color == NEGRO && dynamic_cast<Intermedio<K> *>(raiz)){
+					colorFlip(raiz); //color flip verifica si las condiciones se cumplen para hacer el procedimiento
+					Iterator i(this, raiz);
+					if(raiz->izquierdo->color == ROJO && raiz->izquierdo->izquierdo->color == ROJO){			
+						rotacionSimpleDerecha(raiz, i);
+						return;
+					}
+					if(raiz->izquierdo->color == ROJO && raiz->izquierdo->derecho->color == ROJO){
+						rotacionDobleDerecha(raiz, i);
+						return;
+					}
+					if(raiz->derecho->color == ROJO && raiz->derecho->derecho->color == ROJO){
+						rotacionSimpleIzquierda(raiz, i);
+						return;
+					}
+					if(raiz->derecho->color == ROJO && raiz->derecho->izquierdo->color == ROJO){
+						rotacionDobleIzquierda(raiz, i);
+						return;
+					}
+					if(!dynamic_cast<Hoja<K, V> *>(raiz) && key <= raiz->key){	
+						verificarCamino(raiz->izquierdo, key);
+					}else{
+						if(!dynamic_cast<Hoja<K, V> *>(raiz))
+							verificarCamino(raiz->derecho, key);
+					}
+				}
+				else{
+					if(key <= raiz->key){	
+						verificarCamino(raiz->izquierdo, key);
+					}else{
+						verificarCamino(raiz->derecho, key);
+					}
+				}
+			}
+		}
 		
 	public:
+		/**Cantidad de nodos del árbol, útil para cálculo de dimensiones del gráfico SVG.*/
+		int cantidadNodos;
 		/**Vector que contiene los nodos del árbol, para poder recorrerlos fácilmente.*/
 		std::vector<Nodo<K> *> arbolPlano;
 		/**@class Iterator
@@ -121,10 +286,10 @@ class Arbol
 				}
 				/**Operador de asignación para utilizar como rvalue un puntero a Nodo. Útil para reemplazar el nodo al que 
 				apunta el Iterador, en la estructura del árbol.*/
-				void operator=(Nodo<K> *nodo)
+				Nodo<K>* operator=(Nodo<K> *nodo)
 				{
 					/*Víctima es el nodo al que apunta actualmente el iterador, que será reemplazado por el nuevo nodo.*/
-					Nodo<K> *victima = (this->operator*());
+					Nodo<K> *victima = this->operator*();
 					int dirVictima = this->nodoActual;
 					/*Se regresa al nodo padre de la víctima, para cambiar el puntero de la víctima hacia el nuevo.*/
 					Iterator aux(--(*this));
@@ -139,23 +304,26 @@ class Arbol
 						(*aux)->derecho = nullptr;
 						(*aux)->derecho = nodo;
 					}
-					/*Elimina la victima.*/
-					delete victima;
 					/*Sustituye el puntero eliminado en el vector de punteros.*/
 					nodos->operator[](dirVictima) = nodo;
 					/*Restablece el puntero actual para que quede apuntando al nuevo nodo.*/
 					++(*this);
+					return victima;
 				}
 		};
 		/**Iterador que apunta a la raiz del árbol.*/
 		Iterator begin()
 		{
-			Iterator nuevo(this);
-			nuevo.actual = this->arbolPlano[nuevo.nodoActual];			
-			return nuevo;
+			if(!empty()){
+				Iterator nuevo(this);
+				nuevo.actual = this->arbolPlano[nuevo.nodoActual];
+				return nuevo;
+			}else{
+				return end();
+			}
 		}
 		
-		/**Iterador que apunta a nulo.*/
+		/**Iterador que apunta al elemento después del último elemento del árbol (siempre nulo).*/
 		Iterator end()
 		{
 			return Iterator(this, nullptr);
@@ -178,28 +346,32 @@ class Arbol
 				}
 			}
 		}
-		/**Función recursiva para insertar ordenadamente nodos hoja en el árbol.*/
+		/**Función recursiva para insertar ordenadamente nodos hoja en el árbol. Al final de la inserción arregla los errores que 
+		pudo haber dejado en su camino, para que el árbol siga siendo un árbol rojo-negro. Crea nodos intermedios rojos que tienen únicamente 
+		*la llave menor entre la hoja que se está insertando y la hoja existente a la cual se le está agregando el nodo en orden.
+		*@param k Tipo genérico k para crear la hoja con esa llave.
+		*@param v Tipo genérico v para crear la hoja con ese valor.
+		*/
 		void insertar(K k, V v, Nodo<K> *&raiz)
-		{
+		{		
 			if(!raiz){
 				raiz = new Hoja<K, V>(k, v);
 			}
 			else{
 				//si es hoja
 				if(dynamic_cast<Hoja<K,  V> *>(raiz)){
-					/*Crea un nuevo nodo rojo intermedio.*/
-					Intermedio<K> *intermedio = new Intermedio<K>((raiz)->key, ROJO);
+					/*Crea un nuevo nodo rojo intermedio con la llave menor entre el existente y el nuevo.*/
+					Intermedio<K> *intermedio = new Intermedio<K>((raiz->key <= k? raiz->key : k), ROJO);
 					/*Crea una nueva hoja para el elemento que se va a agregar.*/
 					Hoja<K, V> *nueva = new Hoja<K, V>(k, v);
-					Nodo<K>* menor = (raiz->operator<(dynamic_cast<Nodo<K>*>(nueva))? raiz : nueva);
-					/*A la izquierda del nuevo intermedio, agrega el elemento más pequeño.*/
-					intermedio->izquierdo = menor;
+					/*A la izquierda del nuevo intermedio agrega el elemento más pequeño.*/
+					intermedio->izquierdo = (raiz->key <= nueva->key ? raiz : nueva);
 					/*A la derecha, el más grande.*/
-					intermedio->derecho = (raiz->operator==(menor)? nueva : raiz);
+					intermedio->derecho = (raiz->key > nueva->key ? raiz : nueva);
 					/*Sustituye la hoja vieja por el nuevo nodo intermedio.*/
 					raiz = intermedio;
 				}
-				//si no es una hoja, insertar recursivamente en orden
+				/*Si no es una hoja, insertar recursivamente en orden*/
 				else{
 					if(k <= raiz->key){
 						insertar(k, v, raiz->izquierdo);
@@ -208,76 +380,27 @@ class Arbol
 					}
 				}
 			}
+			/*Verifica y corrige los errores que violan las normas de un árbol rojo-negro, para que quede bien al imprimirse.*/
+			verificarCamino(this->raiz, k);
 		}
-		/**Función para agregar un par (llave, valor), para uso del cliente.*/
-		Arbol &agregar(K key, V value)
+		/**Función para agregar un par (llave, valor) al árbol, que involucra otras funciones además de la inserción.
+		*@param key Llave del nuevo par a insertar.
+		*@param value Valor del nuevo par a insertar.
+		*@return vector de strings que contiene en cada celda una instrucción individual dada por las funciones que se hayan llamado para 
+		*corregir el árbol, para que puedan imprimirse en el archivo svg.
+		*/
+		std::vector<std::string> agregar(K key, V value)
 		{
-			/*Inserta un nodo y actualiza el vector de nodos del iterador.**/
-			insertar(key, value, (this->raiz));		
+			/*Inserta un nodo y actualiza el vector de nodos del iterador.*/
+			instrucciones.clear();
+			cambioColorRaiz();			
+			insertar(key, value, (this->raiz));				
 			this->arbolPlano.clear();
 			this->recorrerEnPreorden((this->raiz));
 			cantidadNodos = arbolPlano.size();
-			return *this;
+			instrucciones.push_back("Insertar hoja");			
+			return instrucciones;
 		}
-		
-		
-		
-		//En proceso, falta lo de la raiz de recolorear
-		void rotacionDobleDerecha( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
-			Nodo<K> * huerfano = raiz->izquierdo->derecho->izquierdo;
-			raiz->izquierdo->derecho->izquierdo = raiz->izquierdo;
-			raiz->izquierdo = raiz->izquierdo->derecho;
-			raiz->izquierdo->izquierdo->derecho = huerfano;
-			rotacionSimpleDerechaNormal( raiz, i );
-		}
-		void rotacionDobleIzquierda( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
-			Nodo<K> * huerfano = raiz->derecho->izquierdo->derecho;
-			raiz->derecho->izquierdo->derecho = raiz->derecho;
-			raiz->derecho = raiz->derecho->izquierdo;
-			raiz->derecho->derecho->izquierdo = huerfano;
-			rotacionSimpleIzquierdaNormal( raiz, i );
-		}
-		void rotacionSimpleDerechaNormal( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
-			Nodo<K> * huerfano = raiz->izquierdo->derecho;
-			Nodo<K> * paraRecolorear = raiz->izquierdo;
-			raiz->izquierdo->derecho = raiz;
-			if( *i->derecho == raiz ){
-				*i->derecho = raiz->izquierdo;
-			} else {
-				*i->izquierdo = raiz->izquierdo;
-			}
-			raiz->izquierdo = huerfano;
-			recolorear( paraRecolorear );
-		}
-		void rotacionSimpleIzquierdaNormal( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
-			Nodo<K> * huerfano = raiz->derecho->izquierdo;
-			Nodo<K> * paraRecolorear = raiz->derecho;
-			raiz->derecho->izquierdo = raiz;
-			if( *i->derecho == raiz ){
-				*i->derecho = raiz->derecho;
-			} else {
-				*i->izquierdo = raiz->derecho;
-			}
-			raiz->derecho = huerfano;
-			recolorear( paraRecolorear );
-		}
-		// void rotacionSimpleDerecha( Nodo<K> * raiz ){
-			// Nodo<K> * huerfano = raiz->derecho->izquierdo->derecho;
-			// raiz->derecho->izquierdo->derecho = raiz->derecho;
-			// raiz->derecho = raiz->derecho->izquierdo;
-			// raiz->derecho->derecho->izquierdo = huerfano;
-		// }
-		// void rotacionSimpleIzquierda( Nodo<K> * raiz, Arbol<K, V>::Iterator & i ){
-			// Nodo<K> * huerfano = raiz->izquierdo->derecho->izquierdo;
-			// raiz->izquierdo->derecho->izquierdo = raiz->izquierdo;
-			// raiz->izquierdo = raiz->izquierdo->derecho;
-			// raiz->izquierdo->izquierdo->derecho = huerfano;
-		// }
-		
-		
-		
-		
-		
 		/**Función recursiva que imprime el árbol en preorden en la salida estándar.*/
 		void imprimir(std::ostream &salida, Nodo<K> *&raiz) const
 		{
@@ -292,11 +415,25 @@ class Arbol
 			
 		}
 		/**Función que imprime el árbol en preorden en la salida estándar, para pruebas del programa.*/
-		std::ostream &operator<<(std::ostream &salida)
+		std::ostream &operator<<(std::ostream &salida) const
 		{
 			imprimir(salida, this->raiz);
-			salida << std::endl << "cantidad de nodos: " << this->arbolPlano.size() << std::endl; 
+			salida << std::endl << "cantidad de nodos: " << size() << std::endl; 
 			return salida;
+		}
+		/**Función predicado que revisa si el árbol está vacío.
+		*@return true si el árbol está vacío, false en caso contrario.
+		*/
+		bool empty() const
+		{
+			return (raiz == nullptr? true : false);
+		}
+		/**Función predicado que retorna la cantidad de nodos del árbol, para realizar cálculos en el dibujo svg.
+		*@return Cantidad de nodos en el árbol.
+		*/
+		int size() const
+		{
+			return cantidadNodos;
 		}
 };
 #endif

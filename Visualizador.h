@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
-#include <iomanip>
+#include <vector>
 #include "Arbol.h"
 /**@class Visualizador
 *Clase que implementa las funciones necesarias para graficar un árbol binario equilibrado rojo-negro en formato de archivo SVG.
@@ -15,15 +15,16 @@ class Visualizador
 	
 		/**Entero que guarda el número de paso actual, para crear archivos de salida distintos.*/
 		int paso;
-		/**Cantidad de nodos del árbol, para ajustar el lienzo del gráfico SVG.*/
-		int cantNodos;
 		/**Radio establecido para los círculos. También para el lado de los cuadrados.*/
 		const int RADIO = 40;
 		/**Iterador del árbol que se está dibujando.*/
 		typename Arbol<K, V>::Iterator iterador;
+		/**Puntero al árbol que se va a dibujar con este visualizador.*/
 		Arbol<K, V> *arbol;
 		/**Archivo de salida para el gráfico SVG.*/
 		std::fstream dibujo;
+		/**Cantidad de nodos del árbol, que cambia para cada dibujo generado.*/
+		int cantNodos;
 		/**Función simple que dibuja un círculo rojo con un círculo inscrito si el nodo es un nodo rojo, o un círculo de borde negro sin fondo si
 		*es un nodo negro.
 		*@param cx Coordenada del centro en el eje x.
@@ -41,9 +42,9 @@ class Visualizador
 		*@param x Coordenada de la esquina superior izquierda en el eje x.
 		*@param y Coordenada de la esquina superior derecha en el eje y.
 		*/
-		void dibujarRectangulo(int x, int y)
+		void dibujarRectangulo(int x, int y, char color)
 		{
-			dibujo << "<rect x=\"" << x << "\" y=\"" << y << "\" width=\"" << RADIO*2 << "\" height=\"" << RADIO*2 << "\" style=\"fill:none; stroke:black; stroke-width:3\"/>";
+			dibujo << "<rect x=\"" << x << "\" y=\"" << y << "\" width=\"" << RADIO*2 << "\" height=\"" << RADIO*2 << "\" style=\"fill:none; stroke:" << (color == Arbol<K, V>::NEGRO? "black" : "red") << "; stroke-width:3\"/>";
 		}
 		/**Función simple que traza una línea, dados sus puntos de inicio y final.
 		*@param x1 Coordenada de inicio en el eje x.
@@ -69,6 +70,15 @@ class Visualizador
 				dibujo << "<text text-anchor=\"middle\" x=\"" << x << "\" y=\"" << y+10 << "\">" << (dynamic_cast<Hoja<K, V> *>(*iterador))->value << "</text>\n";
 			}			
 		}
+		/**Función que imprime en formato de texto SVG las instrucciones necesarias para construir el árbol tal y como se muestra en la visualización.
+		*@param instrucciones Vector de instrucciones que serán impresas en la esquina superior izquierda del archivo svg, una por línea.
+		*/
+		void imprimirInstrucciones(std::vector<std::string> instrucciones)
+		{
+			dibujo << "<text text-anchor=\"start\" x=\"" << 10 << "\" y=\"" << 20 << "\">" << "Paso " << paso << ": " << "</text>";
+			for(int i = 0; i < instrucciones.size(); i++)
+				dibujo << "<text text-anchor=\"start\" x=\"" << 10 << "\" y=\"" << 40+30*i << "\">" << instrucciones[i] << "</text>";
+		}
 		/**Función recursiva que dibuja un subárbol a la vez, donde un subárbol se entiende como un único nodo padre y sus dos hijos.
 		*Si el hijo de la izquierda del nodo actual no es una hoja, se llama para dibujar ese subárbol. Lo mismo para el hijo derecho. En cada iteración, incrementa el iterador para avanzar en el árbol.
 		*@param x Coordenada x donde se centrará el círculo o el cuadrado que representa el nodo en cuestión.
@@ -76,7 +86,7 @@ class Visualizador
 		*/
 		void dibujarSubArbol(int x, int y) //posiciones absolutas para el centro del nodo padre
 		{
-			int desplazamiento = 150; //150px entre nivel de nodos
+			int desplazamiento = 150 + ((*iterador) == arbol->raiz? 10*cantNodos : 0); //150px entre nivel de nodos, más si es el nodo raiz
 			int lado = -1; //-1: rama izquierda, 1: rama derecha
 			int ajusteD = 0; //factor de ajuste para las hojas, para que no se traslapen
 			int ajusteI = 0;
@@ -98,7 +108,7 @@ class Visualizador
 				dibujarLinea(x, y+RADIO, x+(desplazamiento*lado*lado)-ajusteD, (y+desplazamiento)-RADIO);
 				dibujarSubArbol(x+desplazamiento*lado*lado-ajusteD, y+desplazamiento);
 			}else{ //si es una hoja
-				dibujarRectangulo(x-RADIO, y-RADIO);
+				dibujarRectangulo(x-RADIO, y-RADIO, (*iterador)->color);
 				dibujarTexto(x, y, *iterador);
 				++iterador;
 			}	
@@ -108,25 +118,29 @@ class Visualizador
 		
 		/**Constructor.
 		*@param arbol Arbol que se va a graficar.
-		*@param i Iterador del árbol, para recorrerlo y dibujarlo.
 		*/
-		Visualizador(Arbol<K, V> *arbol, typename Arbol<K, V>::Iterator i) 
-		: arbol(arbol), paso(1), cantNodos(arbol->cantidadNodos), iterador(i)
+		Visualizador(Arbol<K, V> *arbol) 
+		: arbol(arbol), paso(1), cantNodos(0), iterador(arbol->begin())
 		{	
 		}
 		/**Función principal que realiza el gráfico completo del árbol y crea el archivo en el formato .svg.
-		*También calcula las dimensiones del lienzo de dibujo, según la cantidad de nodos que tenga el árbol.*/
-		void dibujar()
+		*También calcula las dimensiones del lienzo de dibujo, según la cantidad de nodos que tenga el árbol.
+		*@param instrucciones Vector de instrucciones para incluírlas en la visualización.
+		*/
+		void dibujar(std::vector<std::string> instrucciones)
 		{	
+			cantNodos = arbol->size();
 			iterador = arbol->begin();
-			int width = 1366 + (cantNodos%10)*200;
-			int height = 768 + (cantNodos%10)*200;
+			int width = 1350 + (cantNodos < 7? 0 : cantNodos*25);
+			int height = 600 + (cantNodos < 7? 0 : cantNodos*25);
 			std::string nombreArchivo = "dibujo";
 			nombreArchivo += std::to_string(paso);
 			nombreArchivo += ".svg";
 			dibujo.open(nombreArchivo, std::ios::out);
 			dibujo << "<?xml version='1.0' encoding='UTF-8' ?>\n<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='" << width << "' height='" << height << "px'>\n";
 			dibujarSubArbol(width/2, 50);
+			if(!instrucciones.empty())
+				imprimirInstrucciones(instrucciones);
 			dibujo << "</svg>";
 			dibujo.close();
 			++paso;
