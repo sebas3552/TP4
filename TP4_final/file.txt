@@ -1,0 +1,10 @@
+int char*
+8
+100 cien
+20 veinte
+160 cientsec
+300 trescientos
+350 trescinc
+500 quinientos
+99 nuevenueve
+90 noventa

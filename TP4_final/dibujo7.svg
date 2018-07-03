@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='1675' height='925px'>
+<circle cx="837" cy="50" r="40" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="837" y="55">100</text>
+<line x1="837" y1="90" x2="557" y2="290" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="557" cy="330" r="40" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="557" y="335">20</text>
+<line x1="557" y1="370" x2="497" y2="440" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="457" y="440" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="497" y="475">20</text>
+<text text-anchor="middle" x="497" y="490">veinte</text>
+<line x1="557" y1="370" x2="707" y2="440" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="707" cy="480" r="40" stroke="black" stroke-width="3" fill="red" />
+<circle cx="707" cy="480" r="30" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="707" y="485">99</text>
+<line x1="707" y1="520" x2="647" y2="590" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="607" y="590" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="647" y="625">99</text>
+<text text-anchor="middle" x="647" y="640">nuevenueve</text>
+<line x1="707" y1="520" x2="767" y2="590" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="727" y="590" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="767" y="625">100</text>
+<text text-anchor="middle" x="767" y="640">cien</text>
+<line x1="837" y1="90" x2="1117" y2="290" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="1117" cy="330" r="40" stroke="black" stroke-width="3" fill="red" />
+<circle cx="1117" cy="330" r="30" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="1117" y="335">300</text>
+<line x1="1117" y1="370" x2="967" y2="440" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="967" cy="480" r="40" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="967" y="485">160</text>
+<line x1="967" y1="520" x2="907" y2="590" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="867" y="590" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="907" y="625">160</text>
+<text text-anchor="middle" x="907" y="640">cientsec</text>
+<line x1="967" y1="520" x2="1027" y2="590" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="987" y="590" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="1027" y="625">300</text>
+<text text-anchor="middle" x="1027" y="640">trescientos</text>
+<line x1="1117" y1="370" x2="1267" y2="440" style="stroke:rgb(0,0,0);stroke-width:2" />
+<circle cx="1267" cy="480" r="40" stroke="black" stroke-width="3" fill="none" />
+<text text-anchor="middle" x="1267" y="485">350</text>
+<line x1="1267" y1="520" x2="1207" y2="590" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="1167" y="590" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="1207" y="625">350</text>
+<text text-anchor="middle" x="1207" y="640">trescinc</text>
+<line x1="1267" y1="520" x2="1327" y2="590" style="stroke:rgb(0,0,0);stroke-width:2" />
+<rect x="1287" y="590" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="1327" y="625">500</text>
+<text text-anchor="middle" x="1327" y="640">quinientos</text>
+<text text-anchor="start" x="10" y="20">Paso 7: </text><text text-anchor="start" x="10" y="40">Insertando ( 99, nuevenueve )</text><text text-anchor="start" x="10" y="70">Inserción hoja</text></svg>
