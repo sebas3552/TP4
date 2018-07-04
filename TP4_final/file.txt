@@ -1,10 +1,11 @@
-int char*
+char double
 8
-100 cien
-20 veinte
-160 cientsec
-300 trescientos
-350 trescinc
-500 quinientos
-99 nuevenueve
-90 noventa
+h 12.3
+o 540.1
+l 98.65
+a 10.95
+m 1.8
+u 0.2
+n 0.9
+d 1.1
+o 0.0

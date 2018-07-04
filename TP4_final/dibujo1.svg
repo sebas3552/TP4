@@ -1,5 +1,0 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='1350' height='600px'>
-<rect x="635" y="10" width="80" height="80" style="fill:none; stroke:black; stroke-width:3"/><text text-anchor="middle" x="675" y="45">100</text>
-<text text-anchor="middle" x="675" y="60">cien</text>
-<text text-anchor="start" x="10" y="20">Paso 1: </text><text text-anchor="start" x="10" y="40">Insertando ( 100, cien )</text><text text-anchor="start" x="10" y="70">Inserción hoja</text></svg>

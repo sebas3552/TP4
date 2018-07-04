@@ -21,6 +21,7 @@ int main(int argc, char **argv)
 			archivo >> tipoLlave >> tipoValor >> cantElementos;
 			Cargador *cargador = new Cargador(tipoLlave, tipoValor, cantElementos);
 			cargador->generarArbol(archivo, argv[4]);
+			delete cargador;
 		}catch(exception &e){
 			cerr << e.what() << endl;
 		}
